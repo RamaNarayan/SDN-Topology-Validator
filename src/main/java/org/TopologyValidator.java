@@ -17,7 +17,6 @@ public class TopologyValidator {
 		try {
 			Properties serverProps = new Properties();
 			serverProps.load(new FileInputStream("server_config.properties"));
-			System.out.println(serverProps.getProperty("url"));
 			String user = serverProps.getProperty("user");
 		    String password = serverProps.getProperty("password");
 		    String baseURL = serverProps.getProperty("url");
