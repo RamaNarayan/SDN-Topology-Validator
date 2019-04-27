@@ -2,30 +2,26 @@ package org;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@XmlType
-@XmlAccessorType(XmlAccessType.FIELD)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Node {
-	@XmlElement(name="node-id")
+	@JsonProperty("node-id")
 	private String nodeId;
-	@XmlElement(name="inventory-node-ref")
+	@JsonProperty("opendaylight-topology-inventory:inventory-node-ref")
 	private String inventoryNodeReference;
-	@XmlElement(name="attachment-points",type=AttachmentPoints.class)
-	private AttachmentPoints attachmentPoints;
-	@XmlElement(name="id")
-	private String id;
-	@XmlElement(name="termination-point",type=TerminationPoint.class)
+	@JsonProperty("host-tracker-service:attachment-points")
+	private List<AttachmentPoints> attachmentPoints;
+	@JsonProperty("host-tracker-service:id")
+	private String hostTrackerServiceId;
+	@JsonProperty("termination-point")
 	private List<TerminationPoint> terminationPoint;
-	@XmlElement(name="addresses",type=Addresses.class)
-	private Addresses addresses;
+	@JsonProperty("host-tracker-service:addresses")
+	private List<Addresses> addresses;
 }

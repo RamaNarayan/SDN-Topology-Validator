@@ -1,27 +1,23 @@
 package org;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@XmlType
-@XmlAccessorType(XmlAccessType.FIELD)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Addresses {
-	@XmlElement(name="id")
+	@JsonProperty("id")
 	private String id;
-	@XmlElement(name="mac")
+	@JsonProperty("mac")
 	private String mac;
-	@XmlElement(name="first-seen")
+	@JsonProperty("first-seen")
 	private String firstSeen;
-	@XmlElement(name="last-seen")
+	@JsonProperty("last-seen")
 	private String lastSeen;
-	@XmlElement(name="ip")
+	@JsonProperty("ip")
 	private String ip;
 }

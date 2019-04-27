@@ -1,23 +1,19 @@
 package org;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@XmlType
-@XmlAccessorType(XmlAccessType.FIELD)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Link {
-	@XmlElement(name="link-id")
+	@JsonProperty("link-id")
 	private String id;
-	@XmlElement(name="source",type=SourceLinkNode.class)
+	@JsonProperty("source")
 	private SourceLinkNode src;
-	@XmlElement(name="destination",type=DestinationLinkNode.class)
+	@JsonProperty("destination")
 	private DestinationLinkNode dst;
 }

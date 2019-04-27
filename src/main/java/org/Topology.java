@@ -2,24 +2,20 @@ package org;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Topology {
-	@XmlElement(name="topology-id")
+	@JsonProperty("topology-id")
 	private String id;
-	@XmlElement(name="node")
+	@JsonProperty("node")
 	private List<Node> nodes;
-	@XmlElement(name="link")
+	@JsonProperty("link")
 	private List<Link> links;	
 }

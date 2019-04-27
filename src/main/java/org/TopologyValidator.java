@@ -5,19 +5,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.codec.binary.Base64;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TopologyValidator {
 
@@ -54,32 +55,53 @@ public class TopologyValidator {
 		return null;
 	}
 	
-	public static Topology getTopologyObject(File file) {
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(Topology.class);
-	        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-	        Topology topology = (Topology) unmarshaller.unmarshal(file);
-	        return topology;
-		}
-		catch(Exception ex){
-			ex.printStackTrace();
-			return null;
-		}
-		
+	public static TopologyRoot getTopologyFromJSON(String json) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		TopologyRoot topology = objectMapper.readValue(json, TopologyRoot.class);
+		return topology;
 	}
 	
-	public static Topology getTopologyObject(String xmlString) {
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(Topology.class);
-	        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-	        StringReader reader = new StringReader(xmlString);
-	        Topology topology = (Topology) unmarshaller.unmarshal(reader);
-	        return topology;
-		}
-		catch(Exception ex){
-			ex.printStackTrace();
-			return null;
-		}
+	public static TopologyRoot getTopologyFromJSON(File jsonFile) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		TopologyRoot topology = objectMapper.readValue(jsonFile, TopologyRoot.class);
+		return topology;
+	}
+	
+	public static void printDifference(TopologyRoot master, TopologyRoot current) {
+		if(master==null || master.getTopology()==null)
+			return;
+		if(current == null || current.getTopology()==null)
+			System.out.println("No current Topology");
+		Map<String,Topology> masterMap =master.getTopology().stream().collect(Collectors.toMap(Topology::getId,topology->topology));
+		
+		for(Topology currentTopology: current.getTopology()) {
+			Topology masterTopology = masterMap.get(currentTopology.getId());
+			
+			if(masterTopology==null) {
+				System.out.println("new flow "+currentTopology.getId());
+			}
+			else {				
+				System.out.println("difference in flow "+currentTopology.getId());
+				boolean isDiff = false;
+				if(currentTopology.getNodes()!=null && masterTopology.getNodes()!=null) {					
+					if(currentTopology.getNodes().size()!=masterTopology.getNodes().size()) {
+						isDiff = true;
+						int difference = currentTopology.getNodes().size() - masterTopology.getNodes().size();
+	        			if(difference > 0 ) {
+	        				System.out.println("New nodes: "+difference);
+	        			}
+	        			else {
+	        				System.out.println("Missing Nodes: "+Math.abs(difference));
+	        			}
+	        		}
+	        	}
+				if(!isDiff)
+					System.out.println("No difference");
+			}
+			
+        }
+			
+		
 		
 	}
 	
@@ -89,33 +111,22 @@ public class TopologyValidator {
 		
 		//get current topology
 		String currentTopologyString = topo.getTopologyFromController();
-		Topology currentTopology = getTopologyObject(currentTopologyString);
+		System.out.println(currentTopologyString);
+		TopologyRoot currentTopology = getTopologyFromJSON(currentTopologyString);
 		System.out.println(currentTopology);
 		
 //		//test string topo
-//		String currentTopologyString = new String ( Files.readAllBytes( Paths.get("topology_test.xml") ) );
-//		Topology currentTopology = getTopologyObject(currentTopologyString);
+//		String currentTopologyString = new String ( Files.readAllBytes( Paths.get("C:\\Users\\raman\\eclipse-workspace\\topology-validator\\target\\topology_test.json") ) );
+//		TopologyRoot currentTopology = getTopologyFromJSON(currentTopologyString);
 //		System.out.println(currentTopology);
 		
 		//get master topology
-		File file = new File("topology_standard.xml");
-		Topology masterTopology = getTopologyObject(file);
+		File file = new File("topology_standard.json");
+		//File file = new File("C:\\Users\\raman\\eclipse-workspace\\topology-validator\\target\\topology_standard.json");
+		TopologyRoot masterTopology = getTopologyFromJSON(file);
         System.out.println(masterTopology);
         
-        //print difference
-        if(currentTopology!=null && masterTopology!=null) {
-        	if(currentTopology.getNodes()!=null && masterTopology.getNodes()!=null) {
-        		if(currentTopology.getNodes().size()!=masterTopology.getNodes().size()) {
-        			int difference = currentTopology.getNodes().size() - masterTopology.getNodes().size();
-        			if(difference > 0 ) {
-        				System.out.println("New nodes: "+difference);
-        			}
-        			else {
-        				System.out.println("Missing Nodes: "+Math.abs(difference));
-        			}
-        		}
-        	}
-        }
+        printDifference(masterTopology,currentTopology);
 
 	}
 

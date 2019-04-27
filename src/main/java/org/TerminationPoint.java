@@ -1,21 +1,17 @@
 package org;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@XmlType
-@XmlAccessorType(XmlAccessType.FIELD)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TerminationPoint {
-	@XmlElement(name="tp-id")
+	@JsonProperty("tp-id")
 	private String id;
-	@XmlElement(name="inventory-node-connector-ref")
+	@JsonProperty("opendaylight-topology-inventory:inventory-node-connector-ref")
 	private String inventoryNodeConnectorRef;
 }
