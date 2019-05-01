@@ -1,4 +1,4 @@
-package org;
+package org.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,9 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DestinationLinkNode {
-	@JsonProperty("dest-tp")
-	private String terminationPoint;
-	@JsonProperty("dest-node")
-	private String node;
+public class Link {
+	@JsonProperty("link-id")
+	private String id;
+	@JsonProperty("source")
+	private SourceLinkNode src;
+	@JsonProperty("destination")
+	private DestinationLinkNode dst;
 }

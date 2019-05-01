@@ -1,4 +1,4 @@
-package org;
+package org.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,15 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Addresses {
-	@JsonProperty("id")
+public class AttachmentPoints {
+	@JsonProperty("tp-id")
 	private String id;
-	@JsonProperty("mac")
-	private String mac;
-	@JsonProperty("first-seen")
-	private String firstSeen;
-	@JsonProperty("last-seen")
-	private String lastSeen;
-	@JsonProperty("ip")
-	private String ip;
+	@JsonProperty("corresponding-tp")
+	private String correspondingTerminationPoint;
+	//change it to boolean
+	@JsonProperty("active")
+	private String isActive;
 }
